@@ -1,0 +1,120 @@
+  
+\documentclass[12pt,a4paper]{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{dsfont}
+\usepackage{csquotes}
+\usepackage{makeidx}
+\usepackage[left=3cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+\usepackage{setspace}
+\usepackage{chngcntr} 
+\usepackage{pdfpages}
+\usepackage{graphicx}
+\graphicspath{ {images/} }
+\usepackage{setspace}
+\usepackage{caption}
+\usepackage{amssymb, amsmath, amsthm}
+% \usepackage{mathtools} % Bonus
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{lipsum}
+\usepackage[]{biblatex}
+\addbibresource{references.bib}
+\usepackage{color}   %May be necessary if you want to color links
+\usepackage{hyperref}
+\usepackage[ruled, vlined]{algorithm2e}
+
+\usepackage{newclude}
+\usepackage{calrsfs}
+\DeclareMathAlphabet{\pazocal}{OMS}{zplm}{m}{n}
+\newcommand{\Xa}{\mathcal{X}}
+\newcommand{\Xb}{\pazocal{X}}
+\newcommand{\Pa}{\mathcal{P}}
+\newcommand{\Pb}{\pazocal{P}}
+\newcommand{\Ya}{\mathcal{Y}}
+\newcommand{\Yb}{\pazocal{Y}}
+
+\hypersetup{
+    colorlinks=true, %set true if you want colored links
+    linktoc=all,     %set to all if you want both sections and subsections linked
+    urlcolor=blue,
+    citecolor=blue,
+    linkcolor=blue, %choose some color if you want links to stand out
+}
+\urlstyle{same}
+
+
+
+\setlength{\parskip}{10pt} % Abstand zwischen den Absätzen
+\setlength{\parindent}{0pt} %Erstzeileneinzug 
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{4}
+
+
+\title{Master Thesis}
+\date{\today}
+\begin{document}
+	\begin{titlepage}
+		\centering
+		University of Bonn
+		
+		Master of Science in Economics
+		\vspace{1in}
+		\vspace{1in}
+		
+		{\LARGE \bfseries  Algorithmic Trading using different Machine Learning Methods}
+		\vspace{1in}
+		
+		{\large Submitted by}
+		
+		{\LARGE Raphael Redmer \par}
+		
+		\vspace{1in}
+		
+			Supervisor: TBA
+			
+		\vfill
+		
+		\begin{flushleft}
+			\today
+		\end{flushleft}
+		
+	\end{titlepage}
+	
+	\include*{chapters/0_abstract}
+	\newpage	
+	\tableofcontents
+	\thispagestyle{empty}
+	\newpage
+
+	\pagenumbering{arabic}
+
+	\include*{chapters/1_intro}
+
+	\include*{chapters/2_data_software}
+
+	\include*{chapters/3_methodology}
+	
+	\include*{chapters/4_evaluation}
+
+	\include*{chapters/5_results}
+
+	\include*{chapters/6_discussion}
+
+	% \newpage
+	\include{chapters/appendix}
+
+	\pagebreak
+
+	% \printbibliography
+
+	% \section{Declaration}
+	% I hereby certify that this material is my own work, that I used only those sources and resources referred to in the thesis, and that I have identified citations as such.
+			
+	% \vspace{0.3in}
+
+	% \noindent Bonn, \today
+
+\end{document}
