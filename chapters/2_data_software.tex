@@ -1,5 +1,35 @@
 \section{Data and Software}
+
 \subsection{Data}
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+In this setup, we use minute-binned OHLC data of crypto/USD-pairs obtained from the cryptocurrency 
+exchange \href{ https://www.bitfinex.com/ }{Bitfinex} via its API ranging from 01.01.2019 to 31.12.2019.
+For each minute-bin, we collect \textit{Open}, \textit{High}, \textit{Low}, \textit{Close}, \textit{Volume} 
+and \textit{Timestamp} data. 
+\textit{High} and \textit{Low} denote the highest and lowest price respectively
+that was traded within this timeframe. 
+\textit{Open} and \textit{Close} denote the first and last traded price.
+\textit{Volume} denotes the total volume traded within the respective minute-bin.
+\textit{Timestamp} denotes the point in time for each minute-bin as a UNIX-Timestamp,
+i.e., is the number of seconds that have passed since 01.01.1970 (Cite: <IEEE and The Open Group 2018>).
+
+Even though Bitfinex is the largest exchange for cryptocurrency with a <???> market capitalization and
+<???> different tradable coins, for most coins, the trading frequency is so low such that 
+many crypto/USD-trading pairs have a considerable amount of minute-bins in which no volume was traded.
+In case of a crypto-pair having no volume for a particular minute, the API leaves out this bin
+when requesting its data resulting in missing bins. 
+We resolved this issue by propagating price values from the last active minute-bin
+and setting the volume to zero. Further, we restricted the number of crypto-USD-pairs to the
+top ten pairs by market capitalization (see <plot>). 
+In addition, we decided to only take data from 01.01.2019 to 31.12.2019, 
+since for most coins 2019 was the most active year in terms of trading frequency.
+Thus, the resulting data set contains roughly
+$ 10\, \times\, 365\, \times\, 24\, \times\, 60\, = 5.256.000 $ rows.
+
 \subsection{Software}
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+The programming language used for conducting this study is Python 3.7 (<cite>).
+For data preparation and feature engineering, we used Pandas and numpy (<cite>).
+Data Visualization was done via Maplotllib (<cite>).
+For the training of the models Logistic Regression, Random Forest and Support Vector Machine,
+we used the respective Scikit-learn implementation (<cite>). 
+The Artificial Neural Network was trained using the Keras framework with Tensorflow backend to enable
+GPU calculation.
