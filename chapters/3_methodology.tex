@@ -1,21 +1,63 @@
 \section{Methodology}
+Similarly to <Krauss et al. (2017)> and <cite arbitrage>, the methodology of this paper consists of
+the following steps:
 
-    \subsection{Training and Trading Set}
-    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+\begin{enumerate}
+    \item The entire data set is split into a training, a validation and a trading set.
+    \item The respective features (explanatory variables) and targets (dependent variables) are created
+    \item Each model is trained on the training set
+    \item Conduct out-of-sample predictions on the trading set for each model 
+    \item Evaluate its accuracy and trading-performance on the trading set respectively
+    \item Go to Step 2, and repeat the same steps for a different feature- and target-specification
+  \end{enumerate}
 
-    \subsection{Feature Generation}
-    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
 
-    \subsection{Model Training}
+\subsection{Training and Trading Set}
+In our application to minute-binned data, the test set, i.e. trading set, contains all observations from 01.11.2019 to 31.12.2019.
+The training set ranges from 01.01.2019 to 14.09.2019, and the remaining 15.09.2019 to 31.10.2019 
+is reserved for the valdation set. We decided against the usual k-fold cross-validation approach 
+in order to emphasize the importance of future observation for the model, since its performance only gets
+evaluated on the future trading set.
 
-        \subsubsection{Logistic Regression}
-        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+\subsection{Feature and Target Generation}
+Broadly following <cite>, we generate the feature space as follows:
 
-        \subsubsection{Random Forest}
-        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+\begin{description}
+    \item[Input:] Let $ P^{c} = ( P^{c}_{t} )_{t \in T} $ denote the price process of coin-USD-pair $ c $, with $ c \in \{1, ... , n\} $. The price itself is the average between \textit{Open} and \textit{Close}.
+    \item[Features:] From the data set we obtain the following features:
+    \begin{description}
+        \item[Returns:] Let $ R^{c}_{t, t - m} $ be the simple return for coin $ c $ over $ m $ periods defined as
+        \begin{equation}
+            R^{c}_{t, t - m} = \frac{ P^{c}_{t} }{ P^{c}_{t - m} } - 1 
+        \end{equation} 
+        \item[Volumes:] Let $ V^{c}_{t} $ be the traded volume for coin $ c $ in minute-bin $ t $ scaled by Quantile-Transformer fitted separately for each coin
+    \end{description}
+    \item[Target:] Let $ Y^{c}_{t + 1, t} $ be a binary response variable for each coin $c$. It assumes value 1 (class \textit{up}) if its future 120 min return $ R^{c}_{t + 120, t + 1} $ is greater than its cross-sectional median across all pairs $ ( R^{c}_{t + 120, t + 1} )^{n}_{c=1} $, else -1 (class \textit{down}).
+\end{description}
 
-        \subsubsection{Support Vector Machine}
-        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
 
-        \subsubsection{Artificial Neural Network}
-        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+We decided for the inclusion of volume such that the model has a measure for 
+taking trading activity into account without breaking vital assumptions needed for testing the 1. Efficient Market Hypothesis (<cite>).
+In addition, the volume got scaled for each coin in order to make the measure more comparable across coins,
+since we are training a single universal model for each of the selected coins. 
+Further, the Quantile-Transformation handles outliers (<cite>) and restricts the feature to an intervall ranging from 0 to 1.
+
+
+\subsection{Model Training}
+
+\subsubsection{Logistic Regression}
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+
+\subsubsection{Random Forest}
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+
+\subsubsection{Support Vector Machine}
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+
+\subsubsection{Artificial Neural Network}
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+
+
+\subsection{Trading}
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+
