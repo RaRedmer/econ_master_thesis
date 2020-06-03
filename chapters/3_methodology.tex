@@ -12,7 +12,7 @@ the following steps:
   \end{enumerate}
 
 
-\subsection{Training and Trading Set}
+\subsection{Training and Trading Set} \label{ch:training_trading}
 In our application to minute-binned data, the test set, i.e. trading set, contains all observations from 01.11.2019 to 31.12.2019.
 The training set ranges from 01.01.2019 to 14.09.2019, and the remaining 15.09.2019 to 31.10.2019 
 is reserved for the valdation set. We decided against the usual k-fold cross-validation approach 
@@ -22,20 +22,38 @@ evaluated on the future trading set.
 \subsection{Feature and Target Generation}
 Broadly following <cite>, we generate the feature space as follows:
 
+Let $ P^{c} = ( P^{c}_{t} )_{t \in T} $ denote the price process of coin-USD-pair $ c $, with $ c \in \{1, ... , n\} $. The price itself is the average between \textit{Open} and \textit{Close}.
+
 \begin{description}
-    \item[Input:] Let $ P^{c} = ( P^{c}_{t} )_{t \in T} $ denote the price process of coin-USD-pair $ c $, with $ c \in \{1, ... , n\} $. The price itself is the average between \textit{Open} and \textit{Close}.
     \item[Features:] From the data set we obtain the following features:
     \begin{description}
         \item[Returns:] Let $ R^{c}_{t, t - m} $ be the simple return for coin $ c $ over $ m $ periods defined as
         \begin{equation}
+            \label{eq:return}
             R^{c}_{t, t - m} = \frac{ P^{c}_{t} }{ P^{c}_{t - m} } - 1 
         \end{equation} 
-        \item[Volumes:] Let $ V^{c}_{t} $ be the traded volume for coin $ c $ in minute-bin $ t $ scaled by Quantile-Transformer fitted separately for each coin
+        \item[Volumes:] {
+            Let $ V^{c}_{t} $ be the traded volume for coin $ c $ in minute-bin $ t $ scaled by Quantile-Transformer 
+            fitted separately for each coin only on bins with $ V^{c}_{t} > 0 $. 
+        }
     \end{description}
-    \item[Target:] Let $ Y^{c}_{t + 1, t} $ be a binary response variable for each coin $c$. It assumes value 1 (class \textit{up}) if its future 120 min return $ R^{c}_{t + 120, t + 1} $ is greater than its cross-sectional median across all pairs $ ( R^{c}_{t + 120, t + 1} )^{n}_{c=1} $, else -1 (class \textit{down}).
+    \item[Target:] {
+        Let $ Y^{c}_{t + 1, t} $ be a binary response variable for each coin $c$ 
+        and $ d = 120 $ the size of the future time interval. 
+        It assumes value 1 (class \textit{up}) if its future 120 min return $ R^{c}_{t + d, t + 1} $ is greater 
+        than its cross-sectional median across all pairs $ ( R^{c}_{t + d, t + 1} )^{n}_{c=1} $, 
+        else -1 (class \textit{down}). 
+        Instead of just using the simple return $ R^{c}_{t + d, t + 1} $ as in (<cite>), 
+        we included an additional condition, which demands that $  V^{c}_{t + d} > 0 $ for realizing the feature return.
+        If not skip bins until you reach a bin $ t^{*} = t + d + \delta $  in which $  V^{c}_{ t^{*} } > 0 $, 
+        then realize return as in equation \ref{eq:return}.
+    }
 \end{description}
 
 
+The reason for this further restriction is to make the training of the model more similar to the 
+trading decisions in the backtest, since we only allow trades to be executed in a bin, 
+if any volume was traded for the respective coin.
 We decided for the inclusion of volume such that the model has a measure for 
 taking trading activity into account without breaking vital assumptions needed for testing the 1. Efficient Market Hypothesis (<cite>).
 In addition, the volume got scaled for each coin in order to make the measure more comparable across coins,
@@ -44,6 +62,16 @@ Further, the Quantile-Transformation handles outliers (<cite>) and restricts the
 
 
 \subsection{Model Training}
+As explained in chapter \ref{ch:training_trading}, we construct a training set ranging 01.01.2019 to 14.09.2019, 
+a validation set ranging from 15.09.2019 to 31.10.201, and a trading set ranging from 01.11.2019 to 31.12.2019.
+Further, we restrict the training and validation set by excluding bins for which no volume 
+was traded in in the following bin or lagged values are not available.
+
+
+We cross-validate the respective parameter space by first training the model
+on the test set an evaluating on the chronologically following validation set for each parameter combination.
+After obtaining an accuracy evaluation of each combination, we fit the model with the best validation performance on
+the combined training and valdation set.
 
 \subsubsection{Logistic Regression}
 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
@@ -58,6 +86,48 @@ Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod 
 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
 
 
-\subsection{Trading}
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+\subsection{Trading Algorithm}
+For trading phase, we proceed similarly to (<cite>).
+After having trained each model for different specifications, we generate probability estimates for each class
+based on the trading sets feature's. These probabilities for each bin are then used as signals in bin $t$ for each coin
+in order for the algorithm to decide whether to enter or close a position invested in a coin in the next bin in $ t + 1 $.
+We refer to these position as active.
+More specifically, the algorithm compares the probability estimate for each coin and decides 
+whether to close the current position and enter a new one. The coin with the highest probability estimate for a down movement
+is considered as a candidate for the short position, if its probability is also above a certain threshold,
+since it is most likely to go down. 
+The algorithm proceeds analogously for the long position. 
+If a coin gets chosen this way and the position for this movement is active, then it proceeds to close this position.
+Therefore, we enter a long and a short position at most per bin $ t $.
+In order get a better estimate of the return, we enter 60 initial short and long positions at different points in time,
+thus the resulting portfolio has 120 active positions at most.
+Then, we proceed to calculate aggregate values for each of these positions. To render the backtest more
+realistic, we incorporate the following constraints:
 
+\begin{description}
+    \item[Minimum duration:] {
+        Any active position has a minimum duration of $ d = 120 $, before considering closing it.
+    }
+    \item[Execution gap:] {
+        To account for the time it takes to generate a probability signal and submit the order accordingly,
+        we introduce a execution gap of one minute. This means that when generating the signal from the bin in $ t $,
+        the order gets executed in $ t + 1 $ the earliest.
+    }
+    \item[Volume constraint (orders):] { 
+        Orders for opening or closing a position only get executed in bin $ t $, 
+        if any volume was traded in the respective bin.
+    }
+    \item[Volume constraint (opening a position):] {
+        If after submitting the order according to the sufficient probability signal the traded volume in bin $ t $
+        is zero, the order gets canceled and a new probability signal gets generated for bin $ t $.
+    }
+    \item[Transaction cost:] {
+        For every order execution a transaction cost of $ \epsilon $-bps gets subtracted. 
+        Thus, the opening and closing of a position costs $ 2 \times \epsilon $-bps.
+    }
+    \item[Keep active position:] {
+        If the probability signal yields the same coin as the one from the respective open position,
+        then keep the same position open for another $ d=120 $ minutes before again generating another
+        probability signal.
+    }
+\end{description}
