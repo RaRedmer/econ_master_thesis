@@ -86,7 +86,7 @@ Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod 
 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
 
 
-\subsection{Trading Algorithm}
+\subsection{Trading Algorithm} \label{ch:trading_algorithm}
 For trading phase, we proceed similarly to (<cite>).
 After having trained each model for different specifications, we generate probability estimates for each class
 based on the trading sets feature's. These probabilities for each bin are then used as signals in bin $t$ for each coin
@@ -131,3 +131,40 @@ realistic, we incorporate the following constraints:
         probability signal.
     }
 \end{description}
+
+
+The algorithm described above can also be expressed in a pseudo-algorithmic way:
+
+\begin{algorithm}[H]
+    \caption{Pseudo-Algorithm for a single position ( short and long are analogous) }
+    \KwData{ Minute-binned Test-OHLC-Data and its estimated probability signals }
+    \KwResult{ Trading decisions and its realized returns }
+    initiate position\;
+    \While{ $ row\_number < (max\_row\_number - delta) $ }{
+        load row data given by $ row\_number $\;
+        obtain maximum probability pair\;
+        determine whether the pair fulfills prob-conditions\;
+        \uIf{sufficient probability signal }{
+            \uIf{ no currently active position  }{
+                open new position under constraint\;
+            }
+            \uElseIf{  maximum probability pair != active position pair }{
+                close current position\;
+            }
+        }
+        \Else{
+            \uIf{ currently active position }{
+                close current position\;
+            }
+        }
+        \uIf{ currently active position }{
+        $  row\_number \gets row\_number + delta $
+        }
+        \Else{
+            $ row\_number \gets row\_number + 1 $
+        }
+    }
+
+    
+   \end{algorithm}
+   
