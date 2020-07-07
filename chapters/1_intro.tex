@@ -1,2 +1,65 @@
 \section{Introduction}
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+In the realm of finance literature, it is well known that financial time series
+are notoriously difficult to predict, primarily driven by the high degree of noise \cite{fischer2017lstmMarketPrediction}.
+Moreover, the generally accepted weak efficient market hypothesis provides a theoretical framework
+which encompasses this phenomenon \cite{fama1970marketHypothesis}.
+The weak form suggests that current asset prices reflect all the information of past prices 
+and that no form of technical analysis can be effectively utilized to aid investors in making trading decisions,
+thus eliminating arbitrage solely based on price data.
+So in theory, also machine learning algorithms which were trained on price data 
+should not be able to do so. 
+In order to test this hypothesis, we train multiple machine learning models on price data with different
+specifications to predict price movements. We chose a classification instead of a regression problem, as the literature
+suggests that the former performs better than the latter in predicting financial market data
+(\cite{leung2000classificationStockIndices}, \cite{enke2005classificationNN}).
+Then, we use the estimated probabilities from the models in a backtest 
+for a trading algorithm to simulate actual trading.
+Model training and backtest are conducted on minute-binned OHLC-data of cryptocurrency coins from the 
+Bitfinex exchange. The reason for choosing cryptocurrency assets is the fact that 
+they have remained fairly unregulated by governmental institutions 
+(\cite{dyhrberg2015bitcoinRegulations}, \cite{houben1994cryptoRegulation}).
+Therefore, this asset class and its exchanges are more in line with the underlying assumption of the
+efficient market hypothesis such as perfect markets, thus we expect that arbitrage opportunities only rarely occur. 
+This expectation is further supported by low entry barriers and transaction costs \cite{bitfinex2012}.
+
+<Foreshadow Results and specify contribution to literature>
+
+\section{Literature Review}
+One of the first works addressing this question is \cite{shah2014bayesianRegression}. 
+More specifically, the authors tried to predict price changes of Bitcoin during a six month period in 2014 with a Bayesian
+regression model. The results are astonishing, with a return of 89 percent and a Sharpe ratio of
+4.10 during a period of merely 50 trading days. However, no transaction costs are taken into account,
+perfect liquidity is assumed, and only one cryptocurrency is considered.
+\cite{takeuchi2013momentumTrading} develop an enhanced momentum strategy on the U.S. CRSP
+stock universe from 1965 until 2009. Specifically, deep neural networks are employed as
+classifiers to calculate the probability for each stock to outperform the cross-sectional median
+return of all stocks in the holding month $t + 1$.
+\cite{dixon2015annMarketPrediction} run a similar strategy in a high-frequency setting
+with five-minute binned return data. They reach substantial classification accuracy of 73
+percent, albeit without considering microstructural effects - which is essential when dealing with
+high-frequency data.
+\cite{moritz2014partFutureReturns} deploy random forests on U.S. CRSP data from 1968 to
+2012 to develop a trading strategy relying on "deep conditional portfolio sorts". Specifically,
+they use decile ranks based on all past one-month returns in the 24 months prior to portfolio
+formation at time t as predictor variables. A random forest is trained to predict returns for
+each stock s in the 12 months after portfolio formation. The top decile is bought and the
+bottom decile sold short, resulting in average risk-adjusted excess returns of 2 percent per
+month in a four-factor model similar to \cite{carhart1997mutualFundPerformance}. 
+Including 86 additional features stemming from firm characteristics boosts this figure to a stunning 2.28 percent per month.
+Highest explanatory power can be attributed to most recent returns, irrespective of the
+inclusion of additional firm characteristics. In spite of high turnover, excess returns do not
+disappear after accounting for transaction costs.
+\cite{krauss2019statisticalArbitrage} train a random
+forest on lagged returns of 40 cryptocurrency coins, with the objective to predict whether a coin
+outperforms the cross-sectional median of all 40 coins over the subsequent 120 min. They buy the coins
+with the top-3 predictions and short-sell the coins with the flop-3 predictions, only to reverse the
+positions after 120 min. During the out-of-sample period of our backtest, ranging from 18 June 2018
+to 17 September 2018, and after more than 100,000 trades, they find statistically and economically
+significant returns of 7.1 bps per day, after transaction costs of 15 bps per half-turn.
+\cite{krauss2016arbitrageSandP} implement and analyse the effectiveness of deep neural networks, 
+gradientboosted-trees, random forests, and a combination of these methods in
+the context of statistical arbitrage. Each model is trained on lagged returns of all stocks in
+the S\&P 500, after elimination of survivor bias. From 1992 to 2015, daily one-day-ahead
+trading signals are generated based on the probability forecast of a stock to outperform
+the general market. The highest probabilities are converted into long and the lowest
+probabilities into short positions, thus censoring the less certain middle part of the ranking.

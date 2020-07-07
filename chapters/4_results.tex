@@ -7,7 +7,7 @@ in the following bin or lagged values are not available, as was already done to 
 
 \begin{figure}[H]
     \captionsetup{format=plain}
-    \makebox[\textwidth]{\includegraphics[width=200mm]{all_training_results.png} }
+    \makebox[\textwidth]{\includegraphics[width=200mm]{all/all_training_results.png} }
     \caption{ 
         This table illustrates the accuracy both for the validation and test set for different feature selection. 
     }
@@ -24,7 +24,7 @@ without volume.
 
 \begin{figure}[H]
     \captionsetup{format=plain}
-    \makebox[\textwidth]{\includegraphics[width=200mm]{rf_precision_vs_threshold.png} }
+    \makebox[\textwidth]{\includegraphics[width=200mm]{forest/rf_precision_vs_threshold.png} }
     \caption{ 
             This figure illustrates the precision, recall and up-classifications of the Random Forest for different thresholds
             without taking volume into consideration. 
@@ -84,7 +84,7 @@ These missclassification then cancel off the positive returns in case of a corre
 
 \begin{figure}[H]
     \captionsetup{format=plain}
-    \makebox[\textwidth]{\includegraphics[width=200mm]{rf_total_returns_by_thresholds.png} }
+    \makebox[\textwidth]{\includegraphics[width=200mm]{forest/rf_total_returns_by_thresholds.png} }
     \caption{ 
             This figure illustrates total returns using the Random Forest for probability signals when employing the trading 
             algorithm for different classification threshold levels. 
@@ -103,7 +103,7 @@ since these observations with such returns tend to exhibit stronger probabilitie
 
 \begin{figure}[H]
     \captionsetup{format=plain}
-    \makebox[\textwidth]{\includegraphics[width=200mm]{all_proportion_insufficient_returns.png} }
+    \makebox[\textwidth]{\includegraphics[width=200mm]{all/all_proportion_insufficient_returns.png} }
     \caption{ 
             This figure illustrates the total proportion of correct trading decision according to the price movement with 
             insufficient returns at 30bps transaction cost for different thresholds. 
@@ -125,7 +125,7 @@ thus leading to zero returns eventually, which can also be seen for the Logistic
 
 \begin{figure}[H]
     \captionsetup{format=plain}
-    \makebox[\textwidth]{\includegraphics[width=200mm]{logistic_total_returns_by_thresholds.png} }
+    \makebox[\textwidth]{\includegraphics[width=200mm]{logistic/logistic_total_returns_by_thresholds.png} }
     \caption{ 
             This figure illustrates total returns using the Logistic Regression for probability signals when employing the trading 
             algorithm for different classification threshold levels. 
@@ -138,4 +138,42 @@ thus leading to zero returns eventually, which can also be seen for the Logistic
 
 
 \subsection{Further Analyses}
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+In this chapter, we analyse how the different return deltas impacted the predictions ofthe model.
+
+Figure \ref{fig:rf_feature_importances} illustrates the feature importances for the Random Forest according to MDI \cite{louppe2015variableImportance}
+for different return deltas in minutes (see chapter \ref{ch:feature_and_target}).
+Surprisingly, the overall shape of of the graph is concave peaking a 60 min 
+instead of peaking right at the beginning and then monotonously decreasing in importance.
+As one can see, after a return delta of 10 hours, the relative importance remains low. 
+This indicates that returns over a long period of time exhibit a relatively low explanatory power for
+predicting price movements.
+
+Figure \ref{fig:logistic_coefficients} illustrates the coefficients for the Logistic Regression 
+for different return deltas in minutes. Comparing the absolute coefficient values of with the MDI values 
+from the Random Forest, the effect of the return deltas seems to be inverted. 
+The highest coefficient values are realized at the beginning and at the end which is
+in stark contrast to the Random Forest. However, these findings should be viewed critically, 
+since almost all coefficients exhibit insignificant t-statistic values indicated by the blue color.
+
+
+\begin{figure}[H]
+    \captionsetup{format=plain}
+    \makebox[\textwidth]{\includegraphics[width=200mm]{forest/rf_feature_importances.png} }
+    \caption{ 
+            This figure illustrates the feature importances for the Random Forest according to MDI \cite{louppe2015variableImportance}
+            for different return deltas in minutes as described in chapter \ref{ch:training_trading}.
+        }
+    \label{fig:rf_feature_importances}
+\end{figure}
+
+\begin{figure}[H]
+    \captionsetup{format=plain}
+    \makebox[\textwidth]{\includegraphics[width=200mm]{logistic/logistic_coefficients.png} }
+    \caption{ 
+            This figure illustrates the coefficients for the Logistic Regression 
+            for different return deltas in minutes as described in chapter \ref{ch:training_trading}.
+            The blue bars indicate non-significant coefficient according to the t-test whereas the red ones are
+            significant.
+        }
+    \label{fig:logistic_coefficients}
+\end{figure}

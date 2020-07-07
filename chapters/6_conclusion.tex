@@ -1,0 +1,27 @@
+\section{Discussion}
+
+
+When discussing these findings, one has to consider the limits of arbitrage. 
+In our application, they arise mostly from the microstructure of the crypto market. 
+Due to the high trading frequency, the trading strategy is relatively often confronted with liquidity issues.
+Therefore, in order to facilitate a trade, 
+we followed \cite{gatev2006pairsTrading}, \cite{bowen2016equityMarket} and \cite{liu2015highFrequency}, 
+and demand that to only trade (i) when volume is
+present for a coin and (ii) with a one period gap after signal generation. 
+However, when scaling the invested amount in a position, these restrictions are likely
+not enough for simulating actual trading on the crypto exchange. 
+The greater the order, the longer it takes for the market to clear it. 
+This effect gets even more amplified in markets with low activity and market capitalization.
+Further, due to the unregulated nature of crypto markets, 
+it is possible to influence markets with large enough orders, 
+especially in markets with low capitalization. 
+This effect is difficult to model, since model also needs to take its own actions into account.
+A possible solution would be to use an agent based model with profits as reward which 
+could be realized by Deep Reinforcement Learning. 
+Before deploying this method, the microstructure of the market would be rebuild similar to a game.
+This market would serve as the environment with which the agent of the Deep Reinforcement Learning algortihm
+interacts with.
+Another major limit to arbitrage is capacity. An intraday
+strategy for cryptocurrencies may offer high returns. By contrast, costs for operating
+such a strategy would be significant, when taking into account human capital and
+technical infrastructure \cite{krauss2019statisticalArbitrage}. 

@@ -10,7 +10,7 @@ that was traded within this timeframe.
 \textit{Open} and \textit{Close} denote the first and last traded price.
 \textit{Volume} denotes the total volume traded within the respective minute-bin.
 \textit{Timestamp} denotes the point in time for each minute-bin as a UNIX-Timestamp,
-i.e., is the number of seconds that have passed since 01.01.1970 (Cite: <IEEE and The Open Group 2018>).
+i.e., is the number of seconds that have passed since 01.01.1970.
 
 Even though Bitfinex is the largest exchange for cryptocurrency with a <???> market capitalization and
 <???> different tradable coins, for most coins, the trading frequency is so low such that 
@@ -26,10 +26,10 @@ Thus, the resulting data set contains roughly
 $ 10\, \times\, 365\, \times\, 24\, \times\, 60\, = 5.256.000 $ rows.
 
 \subsection{Software}
-The programming language used for conducting this study is Python 3.7 (<cite>).
-For data preparation and feature engineering, we used Pandas and numpy (<cite>).
-Data Visualization was done via Maplotllib (<cite>).
+The programming language used for conducting this study is Python 3.7 \cite{python2020}.
+For data preparation and feature engineering, we used Pandas and numpy (\cite{pandas2020}, \cite{numpy2020}).
+Data Visualization was done via Maplotllib \cite{matplotlib2020}.
 For the training of the models Logistic Regression, Random Forest and Support Vector Machine,
-we used the respective Scikit-learn implementation (<cite>). 
+we used the respective Scikit-learn implementation \cite{scikit2020}. 
 The Artificial Neural Network was trained using the Keras framework with Tensorflow backend to enable
 GPU calculation.
