@@ -12,14 +12,29 @@ that was traded within this timeframe.
 \textit{Timestamp} denotes the point in time for each minute-bin as a UNIX-Timestamp,
 i.e., is the number of seconds that have passed since 01.01.1970.
 
-Even though Bitfinex is the largest exchange for cryptocurrency with a <???> market capitalization and
-<???> different tradable coins, for most coins, the trading frequency is so low such that 
-many crypto/USD-trading pairs have a considerable amount of minute-bins in which no volume was traded.
+Even though Bitfinex is the largest exchange for cryptocurrency 
+with a daily trading volume roughly 111.366.484 USD of and
+155 different Dollar-tradable coins \cite{bitfinex2012},
+for most coins, the trading frequency is so low such that 
+many crypto/USD-pairs have a considerable amount of minute-bins in 
+which no volume was traded (see figure \ref{fig:all_missing_bins_total}).
+
+\begin{figure}[H] 
+    \captionsetup{format=plain}
+    \makebox[\textwidth]{\includegraphics[width=200mm]{all/all_missing_bins_total.png}}
+    \caption{
+        This figure illustrates the proportion of missing minute-bins
+        to total number of minute-bins in 2019 for the top ten coins.
+    }
+    \label{fig:all_missing_bins_total}
+\end{figure}
+
+
 In case of a crypto-pair having no volume for a particular minute, the API leaves out this bin
 when requesting its data resulting in missing bins. 
 We resolved this issue by propagating price values from the last active minute-bin
-and setting the volume to zero. Further, we restricted the number of crypto-USD-pairs to the
-top ten pairs by market capitalization (see <plot>). 
+and setting the volume to zero. Further, we restricted the number of crypto/USD-pairs to the
+top ten pairs by market capitalization \cite{coinmarketcap2013}. 
 In addition, we decided to only take data from 01.01.2019 to 31.12.2019, 
 since for most coins 2019 was the most active year in terms of trading frequency.
 Thus, the resulting data set contains roughly

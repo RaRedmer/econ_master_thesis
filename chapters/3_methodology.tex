@@ -116,7 +116,7 @@ Decision Trees $ T_{D}^{q}(x) $ are used in Random Forest and AdaBoost.
 
 
 
-\subsubsection{Logistic Regression}
+\subsubsection{Logistic Regression} \label{ch:logistic_regression}
 Logistic Regression sometimes called the logistic model or logit model,
 analyzes the relationship between multiple independent variables or features and a
 categorical dependent variable or target, and estimates the probability of occurrence
@@ -183,7 +183,7 @@ Further, we restrict the maximum number of iterations to 100.
 
 
 %%% RANDOM FOREST %%%
-\subsubsection{Random Forest}
+\subsubsection{Random Forest} \label{ch:random_forest}
 
 Before outlining the algorithm for the Random Forest, we explain the essential 
 building block of the Random Forest which is the Decision Tree.
@@ -204,7 +204,7 @@ An example of such a tree is depicted below in figure \ref{fig:decision_tree_exa
 
 \begin{figure}[H]
     \captionsetup{format=plain}
-    \makebox[\textwidth]{\includegraphics[width=100mm]{decision_tree_example.png}}
+    \makebox[\textwidth]{\includegraphics[width=100mm]{forest/decision_tree_example.png}}
     \caption{Given a data set with two features height and weight, and gender as the target variable, 
              this example tree stratisfies the two-dimensional feature space into three distinct subset each 
              represented by the terminal nodes at the bottom.
@@ -349,7 +349,7 @@ training data have their weights boosted and the
 procedure is repeated.
 The AdaBoost algorithm is illustrated below:
 
-\begin{algorithm}[H]
+\begin{algorithm}[H] \label{alg:adaboost}
     \caption{AdaBoost \cite{hastie2009multiClassAdaboost} }
     
     \KwData{ Training set $D$ with $K$ features }
@@ -368,11 +368,11 @@ The AdaBoost algorithm is illustrated below:
 
         \tcc{ Fit m-th classifier }
 
-        $ T^{m} \leftarrow $ DecisionTree.fit($D$)
+        $ T_{ \widetilde{D} }^{(m)} \leftarrow $ DecisionTree.fit($\widetilde{D}$)
 
         \tcc{ Compute weighted error rate  }
 
-        $ err^{m} \leftarrow \sum_{i=1}^{n} w_{i} \cdot \mathds{1}( c_{i} \neq T^{ (m) } (x_{i}) ) / \sum_{i=1}^{n} w_{i} $
+        $ err^{m} \leftarrow \sum_{i=1}^{n} w_{i} \cdot \mathds{1}( c_{i} \neq T_{ \widetilde{D} }^{ (m) } (x_{i}) ) / \sum_{i=1}^{n} w_{i} $
 
         \tcc{ Compute $\alpha$ parameter }
 
@@ -380,7 +380,7 @@ The AdaBoost algorithm is illustrated below:
 
         \tcc{ Readjust weights }
 
-        $ w_{i} \leftarrow w_{i} \cdot \exp\biggl( \alpha^{(m)} \cdot \mathds{1}( c_{i} \neq T^{ (m) } (x_{i}) ) \biggr),\, for \; i=1, ..., n $
+        $ w_{i} \leftarrow w_{i} \cdot \exp\biggl( \alpha^{(m)} \cdot \mathds{1}( c_{i} \neq T_{ \widetilde{D} }^{ (m) } (x_{i}) ) \biggr),\, for \; i=1, ..., n $
 
         \tcc{ Renormalize weights }
 
@@ -388,22 +388,45 @@ The AdaBoost algorithm is illustrated below:
 
     }
 
-    \Return $ C(x) = \argmax\limits_{k} \sum_{m=1}^{M} \alpha^{(m)} \cdot \mathds{1}( T^{ (m) } (x_{i}) = k ) $ 
+    \Return $ C(x) = \argmax\limits_{k} \sum_{m=1}^{M} \alpha^{(m)} \cdot \mathds{1}( T_{ \widetilde{D} }^{ (m) } (x_{i}) = k ) $ 
 
 
-    \label{alg:adaboost}
 \end{algorithm}
 
+Practically, AdaBoost has many advantages. It is fast, simple and easy to program 
+and it has a low amount of parameters to tune. It requires no prior knowledge about
+the weak learner and so can be flexibly combined with any method for finding weak hypotheses.
+Finally, it comes with a set of theoretical guarantees given sufficient data and a weak learner that
+can reliably provide only moderately accurate weak hypotheses. This is a shift in mind set for the
+learning-system designer: instead of trying to design a learning algorithm that is accurate over the
+entire space, we can instead focus on finding weak learning algorithms that only need to be better
+than random \cite{schapire1999boostingIntro}. 
+A nice property of AdaBoost is its ability to identify outliers, i.e., examples that are either
+mislabeled in the training data, or which are inherently ambiguous and hard to categorize. Because
+AdaBoost focuses its weight on the hardest examples, the examples with the highest weight often
+turn out to be outliers (\cite{schapire1996boostingExperiments}, \cite{schapire1999boostingIntro}).
+This property could be highly valuable when trying to predict price movements, 
+since these outliers could exhibit the most reliable probability signals for the trading algorithm.
+On the other hand, consistent with theory,
+boosting can fail to perform well given insufficient data, overly complex weak hypotheses or weak
+hypotheses which are too weak. 
+Boosting seems to be especially susceptible to noise (\cite{schapire1999boostingIntro}, \cite{dietterich2000ensembleComparison}).
+Therefore, this experiment shows how this tradeoff will be resolved. 
+In our application of the AdaBoost, we conducted a cross-validated grid-search over the number of weak learners, i.e., Decision Trees,
+$M \in \{500, 1000\}$,
+the maximum depth of each tree $ d_{ T^{ (m) } } \in \{1, 3\} $,
+and the learning rate $ \lambda \in \{ 0.001, 0.01, 0.1 \}$
+taking advice from \cite{krauss2016arbitrageSandP}, \cite{hastie2009statisticalLearning} and \cite{friedman2002gradientBoosting}.
 
 
 \subsubsection{Deep Neural Network}
-In this chapter, we briefly describe the Deep Neural Network (DNN) according to <cite>. 
+In this chapter, we briefly describe the Deep Neural Network (DNN) according to \cite{dixon2015annMarketPrediction} and \cite{krauss2016arbitrageSandP}. 
 A deep neural network consists of an input layer, one or more hidden layers, and an output layer,
 forming the topology of the net as can be seen in figure \ref{fig:deep_network_topology}. 
 
 \begin{figure}[H]
     \captionsetup{format=plain}
-    \makebox[\textwidth]{\includegraphics[width=150mm]{deep_network_topology.png} }
+    \makebox[\textwidth]{\includegraphics[width=150mm]{ann/deep_network_topology.png} }
     \caption{ 
         An illustrative example of a feed-forward
         neural network with two hidden layers, seven fea-
@@ -417,53 +440,134 @@ forming the topology of the net as can be seen in figure \ref{fig:deep_network_t
 \end{figure}
 
 The input layer matches the feature space, so that there are
-as many input neurons as predictors. The output layer is either a classication or regression 
+as many input neurons as predictors. The output layer is either a classification or regression 
 layer to match the output space. All layers are composed of neurons, the basic units of such
 a model. In the classical feedforward architecture, each neuron in the previous layer $ l $  is fully
 connected with all neurons in the subsequent layer $ l + 1 $ via directed edges, each representing
 a certain weight. Also, each neuron in a non-output layer of the net has a bias unit, serving
-as its activation threshold. As such, each neuron receives a weighted combination $ \alpha $ of the
-$ n_{l} $ outputs of the neurons in the previous layer $ l $ as input,
+as its activation threshold. As such, each neuron $j$ of layer $l$ receives a weighted combination $ \alpha $ of the
+$ n_{l - 1} $ outputs of the neurons $i = 1, ..., n_{l - 1} $ in the previous layer $ l - 1 $ as input,
 
 \begin{equation}
-    \alpha = \sum_{ i=1 }^{ n_{l} } \beta_{i} x_{i} + b,
+    \alpha_{j}^{l} = \sum_{ i=1 }^{ n_{l - 1} } w_{i, j}^{l} x_{i}^{l - 1} + b_{j}^{l},
     \label{eq:dnn_alpha_weighted_combination}
 \end{equation}
 
-with $ \beta_{i} $ denoting the weight of the output $ x_{i} $ and $ b $ the bias. 
-The weighted combination $ \alpha $ of (\ref{eq:dnn_alpha_weighted_combination}) is transformed via
+with $ w_{i, j}^{l} $ denoting the corresponding weight in layer $l$ for the input $ x_{i}^{l - 1} $ of the previous layer $l - 1$.
+$ b_{j}^{l} $ denotes the bias for neuron $j$ of layer $l$. 
+The weighted combination $ \alpha $ of equation \ref{eq:dnn_alpha_weighted_combination} is transformed via
 some activation function $ f $, so that the output signal $ f(\alpha) $ is relayed to the neurons
-in layer $ l + 1 $. Comparing \ref{eq:dnn_alpha_weighted_combination} and the Random Forest <cite>, 
+in layer $ l + 1 $. Comparing equation \ref{eq:dnn_alpha_weighted_combination} and the Logistic Regression from chapter \ref{ch:logistic_regression}, 
 the similarities become apparent. In that sense, a DNN can be interpretet as multiple sequences of Logistic Regression
 chained together with different activation functions converging into the final model output.
-Following <cite>, we use the ReLU (rectified linear activation unit) 
+We use the ReLU (rectified linear activation unit) (\cite{arora2018relu}, \cite{berner2019reluDerivative})
 $ f: \mathbb{R} \rightarrow \mathbb{R} $,
 
 \begin{equation}
-    f( \alpha ) = max( \alpha, 0 )
+    f( \alpha^{l} ) = max( \alpha^{l}, 0 ) = ( max\{0, \alpha^{l}_{1}\}, ..., max\{0, \alpha^{l}_{  n_{l}  }\} )^{T}
+    \label{eq:relu}
 \end{equation}
 
-Let $ W $ be the collection $ W = \bigcup_{l=1}^{L - 1} W_{l} $, with $W_{l}$ denoting the
+Let $ W $ be the collection $ W = \bigcup_{l=1}^{L - 1} W_{l} $, with $W_{l} = (w_{i, j}^{l}) \in \mathbb{R}^{ n_{l - 1} \times n_{l} } $ denoting the
 weight matrix that connects layers $l$ and $l + 1$ for a network of L layers. Analogously, let $B$
-be the collection $ B = \bigcup_{l=1}^{L - 1} b_{l} $,
-with $b_{l}$ denoting the column vector of biases for layer $l$. The
-collections $W$ and $B$ fully determine the output of the entire DNN. Learning is implemented
+be the collection $ B = \bigcup_{l=1}^{L - 1} b_{l}  $,
+with $ b_{l} = ( b_{j}^{l} ) \in \mathbb{R}^{ n_{l - 1} } $ denoting the column vector of biases for layer $l$ such that the objective is to find
+the optimal $ \theta = (W, B) $ parameters.
+The collections $W$ and $B$ fully determine the output of the entire DNN. Learning is implemented
 by adapting these weights in order to minimize the error on the training data. In particular,
-the objective is to minimize some loss function $\mathscr{L} (W, B)$ for each training example $j$. 
+the objective is to minimize some loss function $\mathscr{L} (\theta)$ for each training example $(x_{i}, y_{i}) \in D$. 
 Since we are dealing with a classification problem, the loss function is cross-entropy,
 
 \begin{equation}
-    \mathscr{L} (W, B) = - \sum_{ j=1 }^{n}  ln( m(y=y_{j} | x_{j})) ) ) \cdot y_{j} + (1 - y_{j}) \cdot ln( 1 - m(y=y_{j} | x_{j})),
+    \mathscr{L} (\theta) = - \sum_{i=1}^{n} \sum_{ k=1 }^{K}  ln( m(y=y_{k} | x_{i}; \theta))  \cdot y_{k}
     \label{eq:dnn_loss_function}
 \end{equation}
 
-with $ m(y=y| x_{j}) $ denoting the fully parametrized DNN as a function according to $W$ and $B$ of feature vector $x_{j}$. 
-Since we are using  the softmax function (<cite>) to transform the output from the last hidden layer,
+with $ m(y=y| x_{i}) $ denoting the fully parametrized DNN as a function according to $W$ and $B$ of feature vector $x_{i}$. 
+Since we are using  the softmax function \cite{dixon2015annMarketPrediction} to transform the output from the last hidden layer,
 the DNN can expressed as follows:
 
 \begin{equation}
-    m( y=y_{j} | x_{j} ) =  \frac{ \alpha_{i}^{L} }{ \sum_{c=1}^{C} \alpha_{c}^{L} }
+    m( y=y_{k} | x_{i} ) =  \frac{ \alpha_{c}^{L} }{ \sum_{j=1}^{K} \alpha_{c}^{L} }
 \end{equation}
+
+The loss function \ref{eq:dnn_loss_function} is minimized
+by stochastic gradient descent, with the gradient of the loss function $\Delta_{\theta} \mathscr{L} (\theta)$
+being calculated via backpropagation \cite{krauss2016arbitrageSandP}.
+% More specifically, For each node $j$ in the $l - 1$-th layer, the recursion relation for the back
+% propagation using conjugate gradients is \cite{dixon2015annMarketPrediction}:
+
+% \begin{equation}
+%     \delta_{j}^{l- 1} = \sum_{i=1}^{ n_{l} } \delta_{i}^{l}  w_{i, j}^{l} f^{'}( \alpha_{j}^{l-1} ),
+%     \label{eq:back_propagation}
+% \end{equation}
+
+% with $f^{'}$ in our application being the derivative of the ReLU function defined as \cite{berner2019reluDerivative}
+
+\begin{equation}
+    f^{'}(\alpha^{l}) = ( \mathbb{I}(\alpha^{l}_{1} > 0), ..., \mathbb{I}(\alpha^{l}_{ n_{l} } > 0) )^{T}
+\end{equation}
+
+Following \cite{rojas1996neuralNetworks}, \cite{ruder2016gradientDescent}, and \cite{dixon2015annMarketPrediction},
+the backpropagation learning algorithm based on the method of stochastic gradient descent (SGD) updates 
+the parameters $ \theta $ after randomly drawing an observation $i$,
+
+\begin{equation}
+    \theta = \theta - \lambda \nabla_{ \theta } \mathscr{L}( \theta, i )
+\end{equation}
+
+with $\lambda$ denoting the learning rate.
+Algorithm \ref{alg:stochastic_gradient_descent} below provides a high level description of the sequential version of
+SGD.
+
+\begin{algorithm}[H]
+    \caption{ Stochastic Gradient Descent \cite{dixon2015annMarketPrediction} }
+
+    \tcc{ Draw initial parameter values from normal distribution }
+
+    $ \theta \leftarrow r $ with $ r = (r_{i})_{i=1}^{n}  $ and $ r_{i} \in \mathscr{N}( \mu, \sigma ), \forall i $
+
+    \tcc{ Get loss according to initial parametrisation }
+
+    $ \mathscr{L} \leftarrow 0 $
+
+    \For{ $  i \in \{ 1, ..., n \} $ }{
+        $ \mathscr{L} \leftarrow \mathscr{L} + \mathscr{L}_{i}( \theta ) $
+    }
+
+    \tcc{ As long as loss above threshold $\tau$, continue to update $\theta$ }
+
+    \While{ $ \mathscr{L} \geq \tau  $  }{
+
+        \For{ $  i \in \{ 1, ..., n \} $ }{
+            $ \theta \leftarrow \theta - \lambda \nabla_{ \theta } \mathscr{L}( \theta, i ) $
+        }
+
+        $ \mathscr{L} \leftarrow 0 $
+
+        \For{ $  i \in \{ 1, ..., n \} $ }{
+            $ \mathscr{L} \leftarrow \mathscr{L} + \mathscr{L}_{i}( \theta ) $
+        }
+    }
+    \label{alg:stochastic_gradient_descent}
+\end{algorithm}
+
+
+In order to describe the network's topology, we introduce the following notation: I-H1-H2-H3-H4-O.
+I denotes the number of input neurons, H1, H2, H3 and H4 the number of hidden neurons in hidden layers 1, 2, 3, and O the number of output
+neurons. A popular rule to set the number of neurons in the first hidden layer H1 of a feedforward network
+is to use as many neurons as there are inputs \cite{krauss2016arbitrageSandP} which we also abide by.
+To introduce a closer fit to the data, we also set H1 = H2.
+Via the third and fourth hidden layer (H3 and H4), 
+we introduce a bottleneck, enforcing a reduction in dimensionality in line with \cite{takeuchi2013momentumTrading} and 
+\cite{dixon2015annMarketPrediction} resulting in H3 = 15 and H4 = 10.
+Let $K$ be the number of features of the data. Then, our topology specification results in 
+I-H1-H2-H3-O = $K$-$K$-$K$-15-10-2 with input layer I matching the number of features.
+We train with 400 epochs, i.e., we pass 400 times over the training set, as in \cite{huck2009pairSelection}.
+At this stage we would like to point that according to \cite{zhang1998annStateOfTheArt} the design of an ANN is more of an art than a science.
+Therefore, we mainly followed best practices and intuitions to calibrate the DNN. 
+However, for the purpose of this paper, it can be argued that it is sufficient, since it shows the operational costs aspect of such an endeavour.
+
 
 
 \subsection{Trading Algorithm} \label{ch:trading_algorithm}
@@ -484,34 +588,35 @@ In order get a better estimate of the return, we enter 60 initial short and long
 thus the resulting portfolio has 120 active positions at most.
 Then, we proceed to calculate aggregate values for each of these positions. To render the backtest more
 realistic, we incorporate the following constraints:
-
-\begin{description}
+\begin{basedescript}{%
+    \desclabelstyle{\multilinelabel}
+    \desclabelwidth{4,5cm}}
     \item[Minimum duration:] {
-        Any active position has a minimum duration of $ d = 120 $, before considering closing it.
+        Any active position has a minimum duration of $ d = 120, 240 $, before considering closing it.
     }
     \item[Execution gap:] {
         To account for the time it takes to generate a probability signal and submit the order accordingly,
         we introduce a execution gap of one minute. This means that when generating the signal from the bin in $ t $,
         the order gets executed in $ t + 1 $ the earliest.
     }
-    \item[Volume constraint (orders):] { 
+    \item[Minimum volume:] { 
         Orders for opening or closing a position only get executed in bin $ t $, 
         if any volume was traded in the respective bin.
     }
-    \item[Volume constraint (opening a position):] {
-        If after submitting the order according to the sufficient probability signal the traded volume in bin $ t $
-        is zero, the order gets canceled and a new probability signal gets generated for bin $ t $.
+    \item[Order cancel:] {
+        If after submitting the order in $ t $ the traded volume in bin $ t + 1 $
+        is zero, the order gets canceled and a new probability signal gets generated in bin $ t + 1 $.
     }
     \item[Transaction cost:] {
-        For every order execution a transaction cost of $ \epsilon $-bps gets subtracted. 
-        Thus, the opening and closing of a position costs $ 2 \times \epsilon $-bps.
+        For every order execution a transaction cost of $ \epsilon $ bps gets subtracted. 
+        Thus, the opening and closing of a position costs $ 2 \times \epsilon $ bps.
     }
     \item[Keep active position:] {
-        If the probability signal yields the same coin as the one from the respective open position,
-        then keep the same position open for another $ d=120 $ minutes before again generating another
+        If the probability signal yields the same coin as the one from the current active position,
+        then keep the same position open for another $ d=120, 240 $ minutes before again generating another
         probability signal.
     }
-\end{description}
+\end{basedescript}
 
 
 The algorithm described above can also be expressed in a pseudo-algorithmic way:
