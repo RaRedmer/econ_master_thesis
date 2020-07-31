@@ -1,3 +1,12 @@
 \section*{Abstract}
-% \thispagestyle{empty}
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+In this master thesis, we uses various machine learning methods to predict price movements based on minute-binned OLHC price data
+from a range crypto currencies obtained from the crypto exchange Bitfinex \cite{bitfinex2012}. 
+The probability signals from these models are then used to inform the trading algorithm, 
+which decides to open either a short or long position for 120min. The models are trained over a time period of 01.01.2019 to 14.09.2019, 
+and then subsequently tested on data ranging from 01.1.2019 to 31.12.2019.
+Then, we proceed to analyse the results in order to determine whether these models can be used to identify arbitrage opportunites
+and if the first efficient market hypothesis is violated. 
+We found that it is not consistently possible in this experimental setup to identify arbitrage and generate superior profits.
+Even with fine tuning the probability threshold, the best model only managed to achieve 15,1\% return over the test period.
+However, this is outmatched by a simple buy-and-hold equal-weight portfolio which achieved a return of 42\%.
+Without fine tuning, the models consistently generate negative returns.

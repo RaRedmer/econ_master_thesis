@@ -22,8 +22,18 @@ In our application to minute-binned data, the test set, i.e. trading set, contai
 The training set ranges from 01.01.2019 to 14.09.2019, and the remaining 15.09.2019 to 31.10.2019 
 is reserved for the valdation set. We decided against the usual k-fold cross-validation approach 
 in order to emphasize the importance of future observation for the model, since its performance only gets
-evaluated on the future trading set.
+evaluated on the future trading set. The daily cumulative short returns in the trading period of the top ten coins can
+seen below in figure \ref{fig:all_top_10_daily_cum_returns}. The returns in the trading period 
+exhibit a downward trajectory across all coins, thus the positive short returns.
 
+\begin{figure}[H] 
+    \captionsetup{format=plain}
+    \makebox[\textwidth]{\includegraphics[width=160mm]{all/all_top_10_daily_cum_returns.png}}
+    \caption{
+        This figure illustrates daily cumulative short returns in the trading period for the top ten coins selection.
+    }
+    \label{fig:all_top_10_daily_cum_returns}
+\end{figure}
 
 
 %%% FEATURE AND TARGET GENERATION
@@ -47,13 +57,13 @@ Let $ P^{c} = ( P^{c}_{t} )_{t \in T} $ denote the price process of coin-USD-pai
         }
     \end{description}
     \item[Target:] {
-        Let $ Y^{c}_{t + 1, t} $ be a binary response variable for each coin $c$ 
-        and $ d = 120 $ the size of the future time interval. 
-        It assumes value 1 (class \textit{up}) if its future 120 min return $ R^{c}_{t + d, t + 1} $ is greater 
-        than its cross-sectional median across all pairs $ ( R^{c}_{t + d, t + 1} )^{n}_{c=1} $, 
+        Let $ Y^{c}_{t + d, t} $ be a binary response variable for each coin $c$ 
+        and $ d = 120, 240 $ the size of the future time interval. 
+        It assumes value 1 (class \textit{up}) if its future $d$ min return $ R^{c}_{t + d + 1, t + 1} $ is greater 
+        than its cross-sectional median across all pairs $ ( R^{c}_{t + d + 1, t + 1} )^{C}_{c=1} $, 
         else -1 (class \textit{down}). 
-        Instead of just using the simple return $ R^{c}_{t + d, t + 1} $ as in \cite{krauss2019statisticalArbitrage},
-        we included an additional condition, which demands that $  V^{c}_{t + d} > 0 $ for realizing the feature return.
+        Instead of just using the simple return $ R^{c}_{t + d + 1, t + 1} $ as in \cite{krauss2019statisticalArbitrage},
+        we included an additional condition, which demands that $  V^{c}_{t + d + 1} > 0 $ for realizing the feature return.
         If not skip bins until you reach a bin $ t^{*} = t + d + \delta $  in which $  V^{c}_{ t^{*} } > 0 $, 
         then realize return as in equation \ref{eq:return}.
     }
@@ -113,6 +123,7 @@ whereas $ x_{i} \in \mathbb{R}^{K} $ the denotes feature vector with $K$ feature
 In addition, we denote a Decision Tree \cite{breiman1984decisionTree} as a function $ T_{D}^{q}(x) $ with $ D $ denoting the set which is was trained on,
 $ q $ the selection of features it was trained on and $ x $ feature vector as an the function argument.
 Decision Trees $ T_{D}^{q}(x) $ are used in Random Forest and AdaBoost.
+
 
 
 
@@ -523,6 +534,10 @@ SGD.
 \begin{algorithm}[H]
     \caption{ Stochastic Gradient Descent \cite{dixon2015annMarketPrediction} }
 
+    \KwData{ Training set $D$ features and parameter space of DNN }
+
+    \KwResult{ Optimized parameter values $\theta$ for DNN } 
+
     \tcc{ Draw initial parameter values from normal distribution }
 
     $ \theta \leftarrow r $ with $ r = (r_{i})_{i=1}^{n}  $ and $ r_{i} \in \mathscr{N}( \mu, \sigma ), \forall i $
@@ -540,6 +555,11 @@ SGD.
     \While{ $ \mathscr{L} \geq \tau  $  }{
 
         \For{ $  i \in \{ 1, ..., n \} $ }{
+
+            \tcc{ Draw random sample from data $D$ }
+
+            $ i \leftarrow drawRamdomly(D) $
+
             $ \theta \leftarrow \theta - \lambda \nabla_{ \theta } \mathscr{L}( \theta, i ) $
         }
 
