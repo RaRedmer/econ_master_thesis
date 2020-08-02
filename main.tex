@@ -5,6 +5,8 @@
 \usepackage{csquotes}
 \usepackage{makeidx}
 \usepackage[left=3cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+\linespread{1.5} 
+
 \usepackage{setspace}
 \usepackage{chngcntr} 
 \usepackage{pdfpages}
@@ -13,14 +15,14 @@
 \usepackage{setspace}
 \usepackage{caption}
 \usepackage{amssymb, amsmath, amsthm, mathrsfs }
-% \usepackage{mathtools} % Bonus
+
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{lipsum}
 \usepackage{ dsfont }
-% \usepackage[]{biblatex}
+
 \usepackage[backend=biber]{biblatex}
 \addbibresource{references.bib}
 \usepackage{color}   %May be necessary if you want to color links
@@ -32,6 +34,10 @@
 
 \usepackage{newclude}
 \usepackage{calrsfs}
+
+\newcommand*{\printdate}{%
+   \ifcase \month\or January\or February\or March\or April\or May\or June\or July\or
+    August\or September\or October\or November\or December\fi \space \number\year}
 
 \DeclareMathAlphabet{\pazocal}{OMS}{zplm}{m}{n}
 \DeclareMathOperator*{\argmax}{arg\,max}
@@ -85,9 +91,12 @@
 				A Machine Learning Approach}
 			\vspace{1in}
 		\end{flushleft}
-		{\large Submitted by}
+		{\large Submitted in \printdate \space by}
 		
-		{\LARGE Raphael Redmer \par}
+		{
+			\LARGE Raphael Redmer \par
+			\large Matriculation Number: 2645976 \par
+		}
 		
 		\vspace{1in}
 		
@@ -95,9 +104,9 @@
 			
 		\vfill
 		
-		\begin{flushleft}
-			\today
-		\end{flushleft}
+		% \begin{flushleft}
+		% 	\today
+		% \end{flushleft}
 		
 	\end{titlepage}
 	
@@ -133,11 +142,12 @@
 	% \newpage
 	% \include{chapters/appendix}
 
+	\thispagestyle{empty}
+	"I hereby confirm that the work presented has been performed and interpreted solely by myself except for where I explicitly identified the contrary. 
+	I assure that this work has not been presented in any other form for the fulfillment of any other degree or qualification. 
+	Ideas taken from other works in letter and in spirit are identified in every single case."
+	\vspace{0.3in}
 
-	% \section{Declaration}
-	% I hereby certify that this material is my own work, that I used only those sources and resources referred to in the thesis, and that I have identified citations as such.
-	% \vspace{0.3in}
-
-	% \noindent Bonn, \today
+	\noindent Bonn, \today
 
 \end{document}
