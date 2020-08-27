@@ -1,4 +1,6 @@
 \section{Appendix}
+
+
 \begin{figure}[H]
     \captionsetup{format=plain}
     \makebox[\textwidth]{\includegraphics[width=165mm]{adaboost/adaboost_threshold_vs_precision.png} }
@@ -71,5 +73,19 @@
         }
     \label{fig:logistic_return_coefficients}
 \end{figure}
+
+
+\begin{figure}[H]
+    \captionsetup{format=plain}
+    \makebox[\textwidth]{\includegraphics[width=165mm]{all/btc_threshold_vs_return_15bps.png} }
+    \caption{ 
+        This figure illustrates total returns at a transaction cost of 15 bps over the trading period 
+        for different thresholds across different feature and target specifications.
+        The four models were trained on features only containing returns and a forecast duration of 120 min from BTC data.
+        }
+    \label{fig:btc_threshold_vs_return_15bps}
+\end{figure}
+
+% TODO: Crypto pair glossary
 
 \pagebreak

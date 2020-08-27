@@ -1,10 +1,10 @@
 \section{Data and Software}
 
 \subsection{Data}
-In this setup, we use minute-binned OHLC data of crypto/USD-pairs obtained from the cryptocurrency 
-exchange \href{ https://www.bitfinex.com/ }{Bitfinex} via its API ranging from 01.01.2019 to 31.12.2019.
-For each minute-bin, we collect \textit{Open}, \textit{High}, \textit{Low}, \textit{Close}, \textit{Volume} 
-and \textit{Timestamp} data. 
+In this experimental setup, I used minute-binned OHLC data of crypto/USD-pairs obtained from the cryptocurrency 
+exchange \href{ https://www.bitfinex.com/ }{Bitfinex} ranging from 01.01.2019 to 31.12.2019 via its official API.
+For each minute-bin, \textit{Open}, \textit{High}, \textit{Low}, \textit{Close}, \textit{Volume} 
+and \textit{Timestamp} data got collected. 
 \textit{High} and \textit{Low} denote the highest and lowest price respectively
 that was traded within this timeframe. 
 \textit{Open} and \textit{Close} denote the first and last traded price.
@@ -13,7 +13,7 @@ that was traded within this timeframe.
 i.e., is the number of seconds that have passed since 01.01.1970.
 
 Even though Bitfinex is the largest exchange for cryptocurrency 
-with a daily trading volume roughly 111.366.484 USD of and
+with a daily trading volume of roughly 111 million USD and
 155 different Dollar-tradable coins \cite{bitfinex2012},
 for most coins, the trading frequency is so low such that 
 many crypto/USD-pairs have a considerable amount of minute-bins in 
@@ -32,11 +32,11 @@ which no volume was traded (see figure \ref{fig:all_missing_bins_total}).
 
 In case of a crypto-pair having no volume for a particular minute, the API leaves out this bin
 when requesting its data resulting in missing bins. 
-We resolved this issue by propagating price values from the last active minute-bin
-and setting the volume to zero. Further, we restricted the number of crypto/USD-pairs to the
+This issue got resolved by propagating price values from the last active minute-bin
+and setting the volume to zero. Further, I restricted the number of crypto/USD-pairs to the
 top ten pairs by market capitalization \cite{coinmarketcap2013}. 
-In addition, we decided to only take data from 01.01.2019 to 31.12.2019, 
-since for most coins 2019 was the most active year in terms of trading frequency.
+In addition, I decided to only take data from 01.01.2019 to 31.12.2019, 
+since 2019 was the most active year in terms of trading frequency for most coins.
 Thus, the resulting data set contains roughly
 $ 10\, \times\, 365\, \times\, 24\, \times\, 60\, = 5.256.000 $ rows.
 
@@ -44,9 +44,6 @@ $ 10\, \times\, 365\, \times\, 24\, \times\, 60\, = 5.256.000 $ rows.
 
 \subsection{Software}
 The programming language used for conducting this study is Python 3.7 \cite{python2020}.
-For data preparation and feature engineering, we used Pandas and numpy (\cite{pandas2020}, \cite{numpy2020}).
+For data preparation and feature engineering, I used Pandas and numpy (\cite{pandas2020}, \cite{numpy2020}).
 Data Visualization was done via Maplotllib \cite{matplotlib2020}.
-For the training of the models Logistic Regression, Random Forest and Support Vector Machine,
-we used the respective Scikit-learn implementation \cite{scikit2020}. 
-The Artificial Neural Network was trained using the Keras framework with Tensorflow backend to enable
-GPU calculation.
+I used the respective Scikit-learn implementation of the Machine Learning models used in this master thesis \cite{scikit2020}. 

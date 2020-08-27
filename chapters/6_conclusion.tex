@@ -1,13 +1,15 @@
 \section{Conclusion}
-Considering the results from above, we conclude that with our experimentational setup it is not feasible to consistently identify arbitrage opportunities
+Considering the results from above, I conclude that it is not feasible to consistently identify arbitrage opportunities with this setup
 solely using OHLC price data. Even when fine tuning the probability threshold for each model, most of them fail to generate any positive return over the trading period.
-Also, even the best performance is outmatched by a the simple buy-and-hold equal-weight portfolio.
+Also, even the best performance is outmatched by a simple buy-and-hold equal-weight portfolio.
 Without fine tuning the probability threshold for each model, the negative returns reach values below -60\% (see appendix \ref{fig:all_threshold_vs_return}).
-Thus, we conclude that our results are supportive of the first efficient market hypothesis \cite{fama1970marketHypothesis}.
+Thus, I conclude that the results are supportive of the first efficient market hypothesis \cite{fama1970marketHypothesis}.
 
-One could further test this hypothesis on crypto markets by focusing on the market microstructure, especially in the context of high frequency trading.
+One could further test this hypothesis on crypto markets by introducing a target variable containing a third state 
+which indicates that returns do not go beyond transaction cost. This would help avoid unnecessary trading decisions.
+Further, one could focuse more on the market microstructure, especially in the context of high frequency trading.
 For example, one could use or even develop models which can interpret the occurence of missing bins accordingly.
-In our application, due to the high trading frequency, the trading strategy is relatively often confronted with liquidity issues leading to missing bins.
+In this application, due to the high trading frequency, the trading strategy is relatively often confronted with liquidity issues leading to missing bins.
 In addition, one could use agent based models with profits as reward such as Reinforcement Learning. 
 In theory, they would learn how to interact properly with the market, and even take the influence of their own actions into account.
 This could be a quite valuable property, since it is possible to influence markets with large enough orders,
@@ -24,7 +26,7 @@ due to the unregulated nature of crypto markets and low market actvity and volum
 % present for a coin and (ii) with a one period gap after signal generation. 
 % However, when scaling the invested amount in a position, these restrictions are likely
 % not enough for simulating actual trading on the crypto exchange. 
-% The greater the order, the longer it takes for the market to clear it. 
+% The greater the order, the longer it takes for the market to clear it.
 % This effect gets even more amplified in markets with low activity and market capitalization.
 % Further, due to the unregulated nature of crypto markets, 
 % it is possible to influence markets with large enough orders, 
